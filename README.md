@@ -19,7 +19,7 @@ Este projeto foi desenhado para rodar com orquestração completa em containers.
 
 ## Pipeline CI/CD
 
-Utilizamos o **GitHub Actions** para automatizar o ciclo de vida da aplicação. O pipeline `.github/workflows/ci-cd.yml` possui três etapas principais:
+Utilizei o **GitHub Actions** para automatizar o ciclo de vida da aplicação. O pipeline `.github/workflows/ci-cd.yml` possui três etapas principais:
 
 1. **Build e Teste:** Faz o setup do ambiente Amazon Corretto (Java 17), compila o backend e roda os testes unitários (`mvnw test`).
 2. **Deploy Staging:** Após o sucesso dos testes, constrói as imagens Docker do Frontend e Backend e faz o push para o Docker Hub com a tag `:staging`.
