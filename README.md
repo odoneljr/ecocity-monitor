@@ -16,6 +16,8 @@ Este projeto foi desenhado para rodar com orquestração completa em containers.
    `http://localhost`
 5. A API estará respondendo em:
    `http://localhost:8080/api/sensors`
+6. Acesse o Swagger (Interface de Teste de API)
+   `http://localhost:8080/swagger-ui.html`
 
 ## Pipeline CI/CD
 
