@@ -1,14 +1,13 @@
-version: '3.8'
-
 services:
+  # Banco de Dados
   db:
     image: postgres:16-alpine
     container_name: ecocity_postgres
     restart: always
     environment:
-      POSTGRES_DB: ${POSTGRES_DB}
-      POSTGRES_USER: ${POSTGRES_USER}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ecocitydb
+      POSTGRES_USER: ecocity_admin
+      POSTGRES_PASSWORD: esg_secure_pass_2026
     ports:
       - "5432:5432"
     volumes:
@@ -16,11 +15,37 @@ services:
     networks:
       - ecocity_network
 
+  # Backend API
+  backend:
+    build: ./backend
+    container_name: ecocity_api
+    restart: always
+    ports:
+      - "8080:8080"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/ecocitydb
+      SPRING_DATASOURCE_USERNAME: ecocity_admin
+      SPRING_DATASOURCE_PASSWORD: esg_secure_pass_2026
+    depends_on:
+      - db
+    networks:
+      - ecocity_network
+
+  # Frontend Dashboard
+  frontend:
+    build: ./frontend
+    container_name: ecocity_frontend
+    restart: always
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
+    networks:
+      - ecocity_network
+
 volumes:
   pgdata:
-    name: ecocity_pgdata
 
 networks:
   ecocity_network:
-    name: ecocity_network
     driver: bridge
