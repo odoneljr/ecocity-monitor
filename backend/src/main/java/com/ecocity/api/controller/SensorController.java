@@ -20,7 +20,7 @@ public class SensorController {
 
     @GetMapping
     public List<SensorData> getAllData() {
-        return repository.findAll();
+        return repository.findAllByOrderByIdDesc();
     }
 
     @PostMapping
