@@ -7,7 +7,7 @@ Projeto de monitoramento IoT para Smart Cities desenvolvido para a disciplina de
 Este projeto foi desenhado para rodar com orquestração completa em containers. Não é necessário ter Java ou Node instalados na máquina host.
 
 1. Clone este repositório:
-   `git clone https://github.com/[SEU_USUARIO]/ecocity-monitor.git`
+   `git clone https://github.com/odoneljr/ecocity-monitor.git`
 2. Navegue até a pasta do projeto:
    `cd ecocity-monitor`
 3. Execute o orquestrador do Docker:
