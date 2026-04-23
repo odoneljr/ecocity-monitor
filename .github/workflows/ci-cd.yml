@@ -1,0 +1,77 @@
+name: EcoCity ESG - CI/CD Pipeline
+
+on:
+  push:
+    branches: ["main"]
+  pull_request:
+    branches: ["main"]
+
+jobs:
+  # 1. ETAPA DE BUILD E TESTES (Integração Contínua)
+  build-and-test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout do código
+        uses: actions/checkout@v3
+
+      - name: Configurar Java 17
+        uses: actions/setup-java@v3
+        with:
+          java-version: "17"
+          distribution: "corretto"
+
+      - name: Executar Testes Automatizados (Backend)
+        working-directory: ./backend
+        run: ./mvnw test
+
+  # 2. ETAPA DE DEPLOY - STAGING (Entrega Contínua)
+  deploy-staging:
+    needs: build-and-test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout do código
+        uses: actions/checkout@v3
+
+      - name: Login no Docker Hub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      - name: Build e Push - API Backend (Staging)
+        working-directory: ./backend
+        run: |
+          docker build -t ${{ secrets.DOCKER_USERNAME }}/ecocity-api:staging .
+          docker push ${{ secrets.DOCKER_USERNAME }}/ecocity-api:staging
+
+      - name: Build e Push - Dashboard Frontend (Staging)
+        working-directory: ./frontend
+        run: |
+          docker build -t ${{ secrets.DOCKER_USERNAME }}/ecocity-frontend:staging .
+          docker push ${{ secrets.DOCKER_USERNAME }}/ecocity-frontend:staging
+
+  # 3. ETAPA DE DEPLOY - PRODUÇÃO (Entrega Contínua)
+  deploy-production:
+    needs: deploy-staging
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout do código
+        uses: actions/checkout@v3
+
+      - name: Login no Docker Hub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      - name: Build e Push - API Backend (Produção)
+        working-directory: ./backend
+        run: |
+          docker build -t ${{ secrets.DOCKER_USERNAME }}/ecocity-api:production .
+          docker push ${{ secrets.DOCKER_USERNAME }}/ecocity-api:production
+
+      - name: Build e Push - Dashboard Frontend (Produção)
+        working-directory: ./frontend
+        run: |
+          docker build -t ${{ secrets.DOCKER_USERNAME }}/ecocity-frontend:production .
+          docker push ${{ secrets.DOCKER_USERNAME }}/ecocity-frontend:production
